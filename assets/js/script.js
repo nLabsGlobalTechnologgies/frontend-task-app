@@ -1,15 +1,11 @@
-// script.js
-
-// Sample ToDo list data
 let todoListData = [];
 
-// Function to render ToDo list
 function renderTodoList() {
-    const todoListContainer = document.getElementById("todoList");
-    todoListContainer.innerHTML = "";
+  const todoListContainer = document.getElementById("todoList");
+  todoListContainer.innerHTML = "";
 
-    todoListData.forEach((todo, index) => {
-        const row = `
+  todoListData.forEach((todo, index) => {
+    const row = `
       <tr>
         <th scope="row">${index + 1}</th>
         <td>${todo.task}</td>
@@ -20,13 +16,12 @@ function renderTodoList() {
         </td>
       </tr>
     `;
-        todoListContainer.innerHTML += row;
-    });
+    todoListContainer.innerHTML += row;
+  });
 }
 
-// Function to open Add ToDo modal
 function openAddModal() {
-    const addTodoModal = `
+  const addTodoModal = `
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -56,48 +51,71 @@ function openAddModal() {
     </div>
   `;
 
-    document.getElementById("addTodoModal").innerHTML = addTodoModal;
-    const modal = new bootstrap.Modal(document.getElementById("addTodoModal"));
-    modal.show();
+  document.getElementById("addTodoModal").innerHTML = addTodoModal;
+  const modal = new bootstrap.Modal(document.getElementById("addTodoModal"));
+  modal.show();
 
-    document.getElementById("addTodoForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-        addTodo();
-        modal.hide();
-    });
+  document.getElementById("addTodoForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    addTodo();
+    modal.hide();
+  });
 
-    // Close butonuna tıklanınca modal'ı kapatma
-    document.getElementById("addTodoForm").querySelector('[data-bs-dismiss="modal"]').addEventListener("click", function () {
-        modal.hide();
-    });
+  document.getElementById("addTodoForm").querySelector('[data-bs-dismiss="modal"]').addEventListener("click", function () {
+    modal.hide();
+  });
 }
 
-// Function to add a new ToDo
 function addTodo() {
-    const task = document.getElementById("task").value;
-    const priority = document.getElementById("priority").value;
+  const task = document.getElementById("task").value;
+  const priority = document.getElementById("priority").value;
 
-    if (!task || !priority) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Task are required!',
-        });
-        return;
+  if (!task || !priority) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Task and priority are required!',
+    });
+    return;
+  } else {
+    var isSuccess = true;
+
+    if (isSuccess) {
+      toastr.warning('Task added successfully!', 'Success');
+      closeModal();
+    } else {
+      toastr.error('An error occurred while adding the task.', 'Error');
     }
+  }
 
-    const newTodo = { task, priority };
-    todoListData.push(newTodo);
 
-    renderTodoList();    
+  const newTodo = { task, priority };
+  todoListData.push(newTodo);
+
+  renderTodoList();
 }
 
 
-// Function to open Update ToDo modal
-function openUpdateModal(index) {
-    const todoToUpdate = todoListData[index];
+function closeModal() {
+  var addModal = document.getElementById("addTodoModal");
+  var updateModal = document.getElementById("updateTodoModal");
+  if (addModal) {
+    addModal.style.display = "none";
+  }
+  if(updateModal){
+    updateModal.style.display = "none";
+  }
+  var backdrop = document.querySelector('.modal-backdrop');
+  if (backdrop) {
+    backdrop.parentNode.removeChild(backdrop);
+  }  
+  document.body.classList.remove('modal-open');
+}
 
-    const updateTodoModal = `
+
+function openUpdateModal(index) {
+  const todoToUpdate = todoListData[index];
+  const updateTodoModal = `
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -126,67 +144,73 @@ function openUpdateModal(index) {
       </div>
     </div>
   `;
-    document.getElementById("updateTodoModal").innerHTML = updateTodoModal;
-    const modal = new bootstrap.Modal(document.getElementById("updateTodoModal"));
-    modal.show();
+  document.getElementById("updateTodoModal").innerHTML = updateTodoModal;
+  const modal = new bootstrap.Modal(document.getElementById("updateTodoModal"));
+  modal.show();
 
-    // Butonlara tıklanınca modal'ı kapatma
-    document.getElementById("updateTodoForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-        updateTodo(index);
-        modal.hide();
-    });
+  // Butonlara tıklanınca modal'ı kapatma
+  document.getElementById("updateTodoForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    updateTodo(index);
+    modal.hide();
+  });
 
-    // Close butonuna tıklanınca modal'ı kapatma
-    document.getElementById("updateTodoForm").querySelector('[data-bs-dismiss="modal"]').addEventListener("click", function () {
-        modal.hide();
-    });
+  // Close butonuna tıklanınca modal'ı kapatma
+  document.getElementById("updateTodoForm").querySelector('[data-bs-dismiss="modal"]').addEventListener("click", function () {
+    modal.hide();
+  });
 }
 
-// Function to update an existing ToDo
 function updateTodo(index) {
-    const updatedTask = document.getElementById("updateTask").value;
-    const updatedPriority = document.getElementById("updatePriority").value;
-
-    if (!updatedTask || !updatedPriority) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Task are required!',
-        });
-        return;
-    }
-
-    todoListData[index].task = updatedTask;
-    todoListData[index].priority = updatedPriority;
-
-    renderTodoList();
-}
-
-// Function to delete a ToDo
-function deleteTodo(index) {
+  const updatedTask = document.getElementById("updateTask").value;
+  const updatedPriority = document.getElementById("updatePriority").value;
+  if (!updatedTask || !updatedPriority) {
     Swal.fire({
-        title: 'Are you sure?',
-        text: 'You won\'t be able to revert this!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            todoListData.splice(index, 1);
-            renderTodoList();
-            Swal.fire(
-                'Deleted!',
-                'Your ToDo has been deleted.',
-                'success'
-            );
-        }
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Task are required!',
     });
+    return;
+  } else {
+    var isSuccess = true;
+
+    if (isSuccess) {
+      toastr.warning('Task updated successfully!', 'Success');
+      closeModal();
+    } else {
+      toastr.error('An error occurred while updating the task.', 'Error');
+    }
+  }
+
+
+  todoListData[index].task = updatedTask;
+  todoListData[index].priority = updatedPriority;
+
+  renderTodoList();
 }
 
-// Sample initialization
+function deleteTodo(index) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You won\'t be able to revert this!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Delete',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      todoListData.splice(index, 1);
+      renderTodoList();
+      Swal.fire(
+        'Deleted!',
+        'Your ToDo has been deleted.',
+        'success'
+      );
+    }
+  });
+}
+
 document.getElementById("addTodoBtn").addEventListener("click", openAddModal);
-renderTodoList();  // Initial rendering of the ToDo list
+renderTodoList();
