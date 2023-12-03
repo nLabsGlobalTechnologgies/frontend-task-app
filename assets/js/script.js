@@ -50,17 +50,14 @@ function openAddModal() {
       </div>
     </div>
   `;
-
   document.getElementById("addTodoModal").innerHTML = addTodoModal;
   const modal = new bootstrap.Modal(document.getElementById("addTodoModal"));
   modal.show();
-
   document.getElementById("addTodoForm").addEventListener("submit", function (event) {
     event.preventDefault();
     addTodo();
     modal.hide();
   });
-
   document.getElementById("addTodoForm").querySelector('[data-bs-dismiss="modal"]').addEventListener("click", function () {
     modal.hide();
   });
@@ -69,7 +66,6 @@ function openAddModal() {
 function addTodo() {
   const task = document.getElementById("task").value;
   const priority = document.getElementById("priority").value;
-
   if (!task || !priority) {
     Swal.fire({
       icon: 'error',
@@ -87,8 +83,6 @@ function addTodo() {
       toastr.error('An error occurred while adding the task.', 'Error');
     }
   }
-
-
   const newTodo = { task, priority };
   todoListData.push(newTodo);
 
@@ -102,13 +96,13 @@ function closeModal() {
   if (addModal) {
     addModal.style.display = "none";
   }
-  if(updateModal){
+  if (updateModal) {
     updateModal.style.display = "none";
   }
   var backdrop = document.querySelector('.modal-backdrop');
   if (backdrop) {
     backdrop.parentNode.removeChild(backdrop);
-  }  
+  }
   document.body.classList.remove('modal-open');
 }
 
@@ -147,15 +141,11 @@ function openUpdateModal(index) {
   document.getElementById("updateTodoModal").innerHTML = updateTodoModal;
   const modal = new bootstrap.Modal(document.getElementById("updateTodoModal"));
   modal.show();
-
-  // Butonlara tıklanınca modal'ı kapatma
   document.getElementById("updateTodoForm").addEventListener("submit", function (event) {
     event.preventDefault();
     updateTodo(index);
     modal.hide();
   });
-
-  // Close butonuna tıklanınca modal'ı kapatma
   document.getElementById("updateTodoForm").querySelector('[data-bs-dismiss="modal"]').addEventListener("click", function () {
     modal.hide();
   });
@@ -181,8 +171,6 @@ function updateTodo(index) {
       toastr.error('An error occurred while updating the task.', 'Error');
     }
   }
-
-
   todoListData[index].task = updatedTask;
   todoListData[index].priority = updatedPriority;
 
